@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.schemas import SensorInput
 from app.model import predict
+from app.recommendations import get_recommendation
 
 
 app = FastAPI(
@@ -37,4 +38,17 @@ def prediction(data: SensorInput):
         gas_rate=data.gas_rate,
     )
 
-    return result
+    recommendation = get_recommendation(
+        result["class_id"]
+    )
+
+    return {
+        "classification": {
+            "class_id": result["class_id"],
+            "label": result["classification"],
+            "confidence": result["confidence"],
+            "probabilities": result["probabilities"],
+        },
+
+        "recommendation": recommendation
+    }
