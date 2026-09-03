@@ -5,13 +5,13 @@ fixture is a static CSV, so a change to the generator that made the task easier
 would show up here as a *rising* score against unchanged data rather than being
 silently absorbed.
 
-Thresholds come from measured run-to-run spread across five training seeds, set
-roughly 4 sigma below the observed means:
+Thresholds come from measured run-to-run spread across five training seeds of the
+275-parameter model, set roughly 4 sigma below the observed means:
 
-    accuracy          0.7469 +/- 0.0114   (range 0.7330 - 0.7610)
-    recall Safe       0.945  +/- 0.015
-    recall Act Soon   0.676  +/- 0.040
-    recall Critical   0.620  +/- 0.007
+    accuracy          0.7671 +/- 0.0076   (range 0.7550 - 0.7753)
+    recall Safe       0.960  +/- 0.003
+    recall Act Soon   0.649  +/- 0.015
+    recall Critical   0.692  +/- 0.019
 
 Regenerate the fixture with `python tests/generate_fixture.py` only when the
 data pipeline changes on purpose.
@@ -38,8 +38,8 @@ from app.model import (
 FIXTURE_PATH = Path(__file__).resolve().parent / "fixtures" / "holdout_windows.csv"
 
 # --- floors (a regression drops below) -------------------------------------
-MIN_ACCURACY = 0.70
-MIN_RECALL = {0: 0.85, 1: 0.50, 2: 0.55}
+MIN_ACCURACY = 0.72
+MIN_RECALL = {0: 0.93, 1: 0.57, 2: 0.60}
 
 # --- ceiling (leakage pushes above) ----------------------------------------
 # The theoretical ceiling for these class bands is 0.7789: bands are contiguous
@@ -52,7 +52,7 @@ MAX_PLAUSIBLE_ACCURACY = 0.85
 # `gas_rate` must remain the feature carrying the signal. The regression this
 # guards against is real: the earlier model scored 0.97 while returning "Safe" at
 # 1.000 confidence for a gas_rate of 5.0, fourteen times its own Critical maximum.
-MIN_GAS_RATE_IMPORTANCE = 0.15
+MIN_GAS_RATE_IMPORTANCE = 0.25
 
 
 @pytest.fixture(scope="module")

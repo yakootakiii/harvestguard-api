@@ -42,7 +42,7 @@ generator change that made the task easier surfaces as a *rising* score against
 unchanged data rather than being absorbed silently.
 
 Thresholds come from measured spread across five training seeds (accuracy
-0.7469 +/- 0.0114; recall 0.945/0.676/0.620), set about 4 sigma below the means. Two
+0.7671 +/- 0.0076; recall 0.960/0.649/0.692), set about 4 sigma below the means. Two
 guards are unusual and deliberate:
 
 - **An upper bound on accuracy** (0.85). The ceiling for these class bands is 0.7789.
@@ -52,7 +52,7 @@ guards are unusual and deliberate:
   0.15 when shuffled. This is the direct regression guard for the bug where the model
   ignored the gas channel entirely.
 
-Verified by mutation: swapping two feature columns fails 8 of 13; disabling the domain
+Verified by mutation: swapping two feature columns fails 8 of 17; disabling the domain
 guard fails 1; desyncing metadata from the model file fails 1.
 
 ### Simulation
@@ -167,14 +167,39 @@ several non-obvious choices exist specifically to stop the model cheating:
 
 ### Interpreting the accuracy
 
-Held-out accuracy is **0.7610 against a theoretical ceiling of 0.7789** — 97.7% of what is
+Held-out accuracy is **0.7700 against a theoretical ceiling of 0.7789** — 98.9% of what is
 achievable. Bands are contiguous and a one-window slope carries ~1 σ_null of noise by
 definition, so boundary windows are irreducibly ambiguous. `train.py` computes and records
 the ceiling for exactly this reason: v1's 0.9717 was higher only because its classes were
 separated in clean fabricated channels, and the number meant nothing.
 
-Critical recall (~0.62) is depressed by regional drift — 226 usable seconds is too short
+Critical recall (~0.69) is depressed by regional drift — 226 usable seconds is too short
 for train and test segments to share drift statistics. More recording time is the only fix.
+
+### Model size is a hard constraint: this runs on an STM32
+
+The target is on-device inference via TFLite Micro, not a server. `build_model` is
+275 parameters (`Dense(16) -> Dense(8) -> Dense(3)`, no dropout) and that number was
+measured, not guessed — across three seeds, 16-8 scored 0.7721 while an 803-parameter
+32-16 network with dropout scored 0.7551 and a 2627-parameter 64-32 one scored 0.7591.
+The task is close to a 1-D decision on `gas_rate`, so extra capacity only adds variance.
+
+Converted footprint (measured, `tests/fixtures/holdout_windows.csv` as the
+representative dataset):
+
+| build | flash | arena | accuracy |
+|---|---|---|---|
+| float32 | 3,288 B | 1,244 B | 0.7700 |
+| int8 | 3,512 B | 392 B | 0.7587 |
+
+int8 costs 1.1 points and cuts working RAM 3x. Ops are `FULLY_CONNECTED` / `RELU` /
+`SOFTMAX` only, all standard TFLite Micro. Do not add layer types or grow this network
+without re-checking both numbers. The arena figures are computed from tensor sizes, not
+measured with `tflite::MicroInterpreter` — a real arena runs somewhat larger.
+
+On-device, the scaler is 12 float constants (`scaler_mean` / `scaler_scale` in the
+metadata) and the rate is a single-pass slope: `sum((i - 29.5) * w[i]) / 17995` over the
+60-sample window, which matches `np.polyfit` to 3e-15 and is float32-safe.
 
 ### The limitation that modelling cannot fix
 

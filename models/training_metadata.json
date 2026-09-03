@@ -69,16 +69,16 @@
     0.08463063622813266,
     0.602185286384475
   ],
-  "held_out_accuracy": 0.7609999775886536,
-  "held_out_loss": 0.47447627782821655,
+  "held_out_accuracy": 0.7699999809265137,
+  "held_out_loss": 0.5037904381752014,
   "theoretical_ceiling": 0.778905,
   "permutation_importance": {
-    "temperature": 0.0011333333333333195,
-    "humidity": -0.0009333333333333193,
-    "gas_raw": 0.09666666666666668,
-    "temperature_rate": -0.0020666666666666832,
-    "humidity_rate": 0.00046666666666665967,
-    "gas_rate": 0.36
+    "temperature": 0.005333333333333345,
+    "humidity": 0.002066666666666661,
+    "gas_raw": 0.040266666666666694,
+    "temperature_rate": 0.006733333333333325,
+    "humidity_rate": 0.0011333333333333417,
+    "gas_rate": 0.40246666666666664
   },
   "epochs_trained": 60,
   "sklearn_version": "1.9.0",
