@@ -1,0 +1,23 @@
+# Training dependencies. Install on top of the inference set:
+#
+#     .venv/bin/pip install -r requirements-train.txt
+#
+# Reproduces models/ from model_train/Banana D1.csv via
+# `python model_train/train.py`.
+
+-r requirements.txt
+
+pandas==3.0.5
+matplotlib==3.11.1
+
+# Notebook execution (model_train/HarvestGuard_ML_v1.ipynb)
+ipykernel==7.3.0
+nbformat==5.11.1
+nbconvert==7.17.1
+jupyterlab==4.5.2
+
+# fastapi.testclient, used by the API smoke checks
+httpx==0.28.1
+
+# Test suite (tests/)
+pytest==9.1.1

@@ -1,0 +1,91 @@
+{
+  "feature_names": [
+    "temperature",
+    "humidity",
+    "gas_raw",
+    "temperature_rate",
+    "humidity_rate",
+    "gas_rate"
+  ],
+  "labels": {
+    "0": "Safe",
+    "1": "Act Soon",
+    "2": "Critical"
+  },
+  "window_size_seconds": 60,
+  "rate_definition": "least-squares slope per second over the window",
+  "gas_bands_sigma_null": {
+    "0": [
+      -1.0,
+      1.5
+    ],
+    "1": [
+      1.5,
+      3.5
+    ],
+    "2": [
+      3.5,
+      7.0
+    ]
+  },
+  "real_signal": {
+    "source": "Banana D1.csv (MQ3)",
+    "duration_seconds": 240.498,
+    "samples_1hz": 226,
+    "sigma_null": 0.06823367407026865,
+    "mean": 103.17477876106194,
+    "sd": 2.7218018859555793
+  },
+  "scaler_mean": [
+    28.16859638287089,
+    70.58984409688394,
+    114.89917179747546,
+    0.0030267101953329145,
+    0.009965005480426718,
+    0.19578730491903468
+  ],
+  "scaler_scale": [
+    2.315707322025273,
+    8.97256198819848,
+    13.726160270362703,
+    0.0043125536467475125,
+    0.02279050006840284,
+    0.1672250761402975
+  ],
+  "domain_sigma": 4.0,
+  "training_feature_min": [
+    23.297831028366506,
+    50.27029962960446,
+    81.42731795682995,
+    -0.008330374793122574,
+    -0.06767944712261893,
+    -0.1588337932032915
+  ],
+  "training_feature_max": [
+    32.83148321720604,
+    91.77394650794366,
+    151.57778655563183,
+    0.01400085037881694,
+    0.08463063622813266,
+    0.602185286384475
+  ],
+  "held_out_accuracy": 0.7609999775886536,
+  "held_out_loss": 0.47447627782821655,
+  "theoretical_ceiling": 0.778905,
+  "permutation_importance": {
+    "temperature": 0.0011333333333333195,
+    "humidity": -0.0009333333333333193,
+    "gas_raw": 0.09666666666666668,
+    "temperature_rate": -0.0020666666666666832,
+    "humidity_rate": 0.00046666666666665967,
+    "gas_rate": 0.36
+  },
+  "epochs_trained": 60,
+  "sklearn_version": "1.9.0",
+  "tensorflow_version": "2.21.0",
+  "caveats": [
+    "Temperature and humidity channels are fully synthetic; no real environmental sensor recording exists yet.",
+    "No real spoilage event has ever been recorded. Class separability is calibrated against the measured sensor noise floor, but the absolute gas rates that correspond to real spoilage are unvalidated.",
+    "Held-out accuracy is depressed by regional drift: the 226 usable seconds of real gas are too short for the train and test segments to share the same wander statistics. More recording time is the fix."
+  ]
+}

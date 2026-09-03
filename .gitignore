@@ -11,6 +11,10 @@ postman/
 __pycache__/
 *.py[cod]
 
+# Test / tooling cache
+.pytest_cache/
+.ipynb_checkpoints/
+
 # Environment variables
 .env
 .env.*
